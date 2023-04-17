@@ -789,11 +789,21 @@ void CSurfaceMovement::SetParametricCoord(CGeometry* geometry, CConfig* config, 
           Ybar = CartCoord[1] - Y_0;
           Zbar = CartCoord[2] - Z_0;
 
-          CartCoord[0] = sqrt(Ybar * Ybar + Zbar * Zbar);
+          /*CartCoord[0] = sqrt(Ybar * Ybar + Zbar * Zbar);
           CartCoord[1] = atan2(Zbar, Ybar);
           if (CartCoord[1] > PI_NUMBER / 2.0) CartCoord[1] -= 2.0 * PI_NUMBER;
-          CartCoord[2] = Xbar;
-        } else if (spherical || polar) {
+          CartCoord[2] = Xbar;*/
+          su2double direction_x = 0.0;
+          su2double direction_y = 0.0;
+          su2double direction_z = 1.0;
+          if(direction_z == 1.0){
+            CartCoord[0] = sqrt(Xbar * Xbar + Ybar * Ybar);
+            CartCoord[1] = atan2(Ybar, Xbar);
+            if (CartCoord[1] > PI_NUMBER / 2.0) Coord[1] -= 2.0 * PI_NUMBER;
+            cout<<"direction Z: "<<direction_z<<endl;
+            CartCoord[2] = Zbar;
+          }
+          } else if (spherical || polar) {
           X_0 = config->GetFFD_Axis(0);
           Y_0 = config->GetFFD_Axis(1);
           Z_0 = config->GetFFD_Axis(2);

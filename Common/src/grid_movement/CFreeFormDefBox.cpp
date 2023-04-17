@@ -1050,11 +1050,28 @@ bool CFreeFormDefBox::GetPointFFD(CGeometry* geometry, CConfig* config, unsigned
     Xbar = Coord[0] - X_0;
     Ybar = Coord[1] - Y_0;
     Zbar = Coord[2] - Z_0;
-
-    Coord[0] = sqrt(Ybar * Ybar + Zbar * Zbar);
-    Coord[1] = atan2(Zbar, Ybar);
-    if (Coord[1] > PI_NUMBER / 2.0) Coord[1] -= 2.0 * PI_NUMBER;
-    Coord[2] = Xbar;
+    su2double direction_x = 0.0;
+    su2double direction_y = 0.0;
+    su2double direction_z = 1.0;
+    if(direction_z == 1.0){
+      Coord[0] = sqrt(Xbar * Xbar + Ybar * Ybar);
+      Coord[1] = atan2(Ybar, Xbar);
+      if (Coord[1] > PI_NUMBER / 2.0) Coord[1] -= 2.0 * PI_NUMBER;
+      cout<<"direction Z: "<<direction_z<<endl;
+      Coord[2] = Zbar;
+    }/*else if (direction_y ==1.0){
+      Coord[0] = sqrt(Xbar * Xbar + Zbar * Zbar);
+      Coord[1] = atan2(Xbar, Zbar);
+      cout<<"direction Y: "<<direction_y<<endl;
+      if (Coord[1] > PI_NUMBER / 2.0) Coord[1] -= 2.0 * PI_NUMBER;
+      Coord[2] = Ybar;
+    }else{
+      Coord[0] = sqrt(Ybar * Ybar + Zbar * Zbar);
+      Coord[1] = atan2(Zbar, Ybar);
+      cout<<"direction X: "<<direction_x<<endl;
+      if (Coord[1] > PI_NUMBER / 2.0) Coord[1] -= 2.0 * PI_NUMBER;
+      Coord[2] = Xbar;
+    }*/
 
   }
 
