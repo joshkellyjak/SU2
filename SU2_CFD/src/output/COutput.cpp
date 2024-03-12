@@ -234,7 +234,7 @@ void COutput::SetHistoryOutput(CGeometry ****geometry, CSolver *****solver, CCon
   if (config[ZONE_0]->GetMultizone_Problem())
     Iter = OuterIter;
     
-  /*--- Turbomachinery Performance Screen summary output---*/
+  /*--- Turbomachinery Performance Screen summary output ---*/
   if (Iter%100 == 0 && rank == MASTER_NODE) {
     SetTurboPerformance_Output(TurboPerf, config[val_iZone], TimeIter, OuterIter, InnerIter);
     SetTurboMultiZonePerformance_Output(TurboStagePerf, TurboPerf, config[val_iZone]);
@@ -246,10 +246,24 @@ void COutput::SetHistoryOutput(CGeometry ****geometry, CSolver *****solver, CCon
     }
   }
 
-  /*--- Update turboperformance history file*/
+  /*--- Update turboperformance history file ---*/
   if (rank == MASTER_NODE){
     LoadTurboHistoryData(TurboStagePerf, TurboPerf, config[val_iZone]);
   }
+
+  /*--- Set objective functions for turbomachinery ---*/
+  /*--- Needs to be performed in last zone where turbo objectives are computed ---*/
+  if (val_iZone == config[ZONE_0]->GetnZone()-1) {
+    auto const Weight_ObjFunc = config[val_iZone]->GetWeight_ObjFunc(val_iZone);
+    su2double ObjFunc = 0.0;
+    switch (config[val_iZone]->GetKind_ObjFunc(0)){
+      case ENTROPY_GENERATION:
+        ObjFunc += TurboStagePerf->GetNormEntropyGen()*Weight_ObjFunc;
+    }
+    solver[val_iZone][val_iInst][MESH_0][FLOW_SOL]->SetTotal_Custom_ObjFunc(ObjFunc);
+    solver[val_iZone][val_iInst][MESH_0][FLOW_SOL]->Evaluate_ObjFunc(config[val_iZone],solver[val_iZone][val_iInst][MESH_0]);
+  }
+
   SetHistoryOutput(geometry[val_iZone][val_iInst][MESH_0], solver[val_iZone][val_iInst][MESH_0], config[val_iZone], TimeIter, OuterIter,InnerIter);
 
 }
