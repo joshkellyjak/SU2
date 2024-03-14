@@ -244,6 +244,7 @@ void COutput::SetHistoryOutput(CGeometry ****geometry, CSolver *****solver, CCon
     if (rank == MASTER_NODE) {
       WriteTurboSpanwisePerformance(TurboPerf, geometry[iZone][val_iInst][MESH_0], config, iZone);
     }
+    config[iZone]->SetEntropyGeneration(TurboStagePerf->GetNormEntropyGen());
   }
 
   /*--- Update turboperformance history file ---*/
@@ -253,16 +254,11 @@ void COutput::SetHistoryOutput(CGeometry ****geometry, CSolver *****solver, CCon
 
   /*--- Set objective functions for turbomachinery ---*/
   /*--- Needs to be performed in last zone where turbo objectives are computed ---*/
-  if (val_iZone == config[ZONE_0]->GetnZone()-1) {
-    auto const Weight_ObjFunc = config[val_iZone]->GetWeight_ObjFunc(val_iZone);
-    su2double ObjFunc = 0.0;
-    switch (config[val_iZone]->GetKind_ObjFunc(0)){
-      case ENTROPY_GENERATION:
-        ObjFunc += TurboStagePerf->GetNormEntropyGen()*Weight_ObjFunc;
-    }
-    solver[val_iZone][val_iInst][MESH_0][FLOW_SOL]->SetTotal_Custom_ObjFunc(ObjFunc);
-    solver[val_iZone][val_iInst][MESH_0][FLOW_SOL]->Evaluate_ObjFunc(config[val_iZone],solver[val_iZone][val_iInst][MESH_0]);
-  }
+  //if (val_iZone == config[ZONE_0]->GetnZone()-1) {
+  //  auto const Weight_ObjFunc = config[val_iZone]->GetWeight_ObjFunc(val_iZone);
+  //  su2double ObjFunc = 0.0;
+  //  config[ZONE_0]->SetEntropyGeneration(TurboStagePerf->GetNormEntropyGen());
+  //}
 
   SetHistoryOutput(geometry[val_iZone][val_iInst][MESH_0], solver[val_iZone][val_iInst][MESH_0], config[val_iZone], TimeIter, OuterIter,InnerIter);
 

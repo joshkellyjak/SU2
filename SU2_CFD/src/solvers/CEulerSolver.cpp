@@ -4767,6 +4767,8 @@ void CEulerSolver::Evaluate_ObjFunc(const CConfig *config, CSolver**) {
     case SURFACE_MACH:
       Total_ComboObj+=Weight_ObjFunc*config->GetSurface_Mach(0);
       break;
+    case ENTROPY_GENERATION:
+      Total_ComboObj+=Weight_ObjFunc*config->GetEntropyGeneration();
     default:
       break;
   }

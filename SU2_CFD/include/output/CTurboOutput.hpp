@@ -201,7 +201,7 @@ class CPropellorBladePerformance : public CTurbomachineryBladePerformance {
 };
 
 /*!
- * \brief Class for computng full stage performance
+ * \brief Class for computing full stage performance
  * \author S. Vitale, N. Anand, J. Kelly
  * \ingroup Output
  */

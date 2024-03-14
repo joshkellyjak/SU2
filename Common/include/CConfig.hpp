@@ -434,9 +434,11 @@ private:
   Max_DeltaTime,               /*!< \brief Max delta time. */
   Unst_CFL;                    /*!< \brief Unsteady CFL number. */
 
-  TURBO_PERF_KIND *Kind_TurboPerf;           /*!< \brief Kind of turbomachynery architecture.*/
+  TURBO_PERF_KIND *Kind_TurboPerf;           /*!< \brief Kind of turbomachinery architecture.*/
   TURBOMACHINERY_TYPE *Kind_TurboMachinery;
   TURBO_INTERFACE_KIND *Kind_TurboInterface;
+
+  su2double EntropyGeneration; /*!< \brief Entropy generation of a turbomachine */
 
   /* Gradient smoothing options */
   su2double SmoothingEps1;          /*!< \brief Parameter for the identity part in gradient smoothing. */
@@ -5171,6 +5173,17 @@ public:
    * \return nBlades.
    */
   void SetnBlades(unsigned short val_iZone, su2double nblades) { nBlades[val_iZone] = nblades;}
+
+  /*!
+   * \brief sets the machine entropy generation
+   * \param[in] entropyGen - value of machine entropy generation
+   */
+  void SetEntropyGeneration(su2double entropyGen) {EntropyGeneration = entropyGen; }
+
+  /*!
+   * \brief gets the machine entropy generation
+  */
+  su2double GetEntropyGeneration(void) const { return EntropyGeneration; }
 
   /*!
    * \brief Verify if there is any Giles Boundary Condition option specified from config file.
