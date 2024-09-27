@@ -404,7 +404,10 @@ void CDiscAdjFluidIteration::RegisterInput(CSolver***** solver, CGeometry**** ge
 
   SU2_OMP_PARALLEL_(if(solvers0[ADJFLOW_SOL]->GetHasHybridParallel())) {
 
-  if (kind_recording == RECORDING::SOLUTION_VARIABLES || kind_recording == RECORDING::SOLUTION_AND_MESH) {
+  if (kind_recording == RECORDING::SOLUTION_VARIABLES ||
+      kind_recording == RECORDING::TAG_INIT_SOLUTION_VARIABLES ||
+      kind_recording == RECORDING::TAG_CHECK_SOLUTION_VARIABLES ||
+      kind_recording == RECORDING::SOLUTION_AND_MESH) {
     /*--- Register flow and turbulent variables as input ---*/
 
     if (config[iZone]->GetFluidProblem()) {
@@ -472,11 +475,8 @@ void CDiscAdjFluidIteration::SetDependencies(CSolver***** solver, CGeometry**** 
   solvers0[FLOW_SOL]->CompleteComms(geometry0, config[iZone], MPI_QUANTITIES::SOLUTION);
 
   if (config[iZone]->GetBoolTurbomachinery()) {
-    solvers0[FLOW_SOL]->PreprocessAverage(solvers0, geometry0, config[iZone], INFLOW);
-    solvers0[FLOW_SOL]->PreprocessAverage(solvers0, geometry0, config[iZone], OUTFLOW);
     solvers0[FLOW_SOL]->TurboAverageProcess(solvers0, geometry0, config[iZone], INFLOW);
     solvers0[FLOW_SOL]->TurboAverageProcess(solvers0, geometry0, config[iZone], OUTFLOW);
-    solvers0[FLOW_SOL]->GatherInOutAverageValues(config[iZone], geometry0);
   }
   if (turbulent && !config[iZone]->GetFrozen_Visc_Disc()) {
     solvers0[TURB_SOL]->Postprocessing(geometry0, solvers0,
