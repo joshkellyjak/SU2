@@ -123,10 +123,10 @@ class CAvgGrad_Scalar : public CNumerics {
     AD::SetPreaccIn(Normal, nDim);
     AD::SetPreaccIn(ScalarVar_Grad_i, nVar, nDim);
     AD::SetPreaccIn(ScalarVar_Grad_j, nVar, nDim);
-    if (correct_gradient) {
-      AD::SetPreaccIn(ScalarVar_i, nVar);
-      AD::SetPreaccIn(ScalarVar_j, nVar);
-    }
+    //if (correct_gradient) {
+    AD::SetPreaccIn(ScalarVar_i, nVar);
+    AD::SetPreaccIn(ScalarVar_j, nVar);
+    //}
     if (!std::is_same<FlowIndices, CNoFlowIndices>::value) {
       AD::SetPreaccIn(V_i[idx.Density()], V_i[idx.LaminarViscosity()], V_i[idx.EddyViscosity()]);
       AD::SetPreaccIn(V_j[idx.Density()], V_j[idx.LaminarViscosity()], V_j[idx.EddyViscosity()]);

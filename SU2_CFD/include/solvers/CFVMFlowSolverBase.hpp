@@ -414,7 +414,19 @@ class CFVMFlowSolverBase : public CSolver {
 
         auto iEdge = geometry->nodes->GetEdge(iPoint,iNeigh);
         auto Normal = geometry->edges->GetNormal(iEdge);
+
+        AD::Identifier normal_index;
+        AD::SetIndex(normal_index, Normal[0]);
+        #ifdef CODI_TAG_TAPE
+        if (normal_index.tag != 0) {
+          cout << normal_index << endl;
+          cout << "Normal with bad tag!" << endl;
+        }
+        #endif
+        // Tags uninitialised
+        // run normal (non turbo) case
         auto Area2 = GeometryToolbox::SquaredNorm(nDim, Normal);
+        
 
         /*--- Mean Values ---*/
 

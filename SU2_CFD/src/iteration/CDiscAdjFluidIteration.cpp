@@ -475,8 +475,21 @@ void CDiscAdjFluidIteration::SetDependencies(CSolver***** solver, CGeometry**** 
   solvers0[FLOW_SOL]->CompleteComms(geometry0, config[iZone], MPI_QUANTITIES::SOLUTION);
 
   if (config[iZone]->GetBoolTurbomachinery()) {
+    solvers0[FLOW_SOL]->InitTurboContainers(geometry0, config[iZone]);
+    // geometry0->ComputeNSpan(config[iZone], iZone, INFLOW, true);
+    // geometry0->ComputeNSpan(config[iZone], iZone, OUTFLOW, true);
+    // geometry0->SetTurboVertex(config[iZone], iZone, INFLOW, true);
+    // geometry0->SetTurboVertex(config[iZone], iZone, OUTFLOW, true);
+    if (config[iZone]->GetBoolGiles() && config[iZone]->GetSpatialFourier()){
+      auto conv_bound_numerics = numerics[iZone][iInst][MESH_0][FLOW_SOL][CONV_BOUND_TERM + omp_get_thread_num()*MAX_TERMS];
+      solvers0[FLOW_SOL]->PreprocessBC_Giles(geometry0, config[iZone], conv_bound_numerics, INFLOW);
+      solvers0[FLOW_SOL]->PreprocessBC_Giles(geometry0, config[iZone], conv_bound_numerics, OUTFLOW);
+    }
+    solvers0[FLOW_SOL]->PreprocessAverage(solvers0, geometry0, config[iZone], INFLOW);
+    solvers0[FLOW_SOL]->PreprocessAverage(solvers0, geometry0, config[iZone], OUTFLOW);
     solvers0[FLOW_SOL]->TurboAverageProcess(solvers0, geometry0, config[iZone], INFLOW);
     solvers0[FLOW_SOL]->TurboAverageProcess(solvers0, geometry0, config[iZone], OUTFLOW);
+    solvers0[FLOW_SOL]->GatherInOutAverageValues(config[iZone], geometry0);
   }
   if (turbulent && !config[iZone]->GetFrozen_Visc_Disc()) {
     solvers0[TURB_SOL]->Postprocessing(geometry0, solvers0,

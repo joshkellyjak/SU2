@@ -174,14 +174,14 @@ public:
     Base::viscousTerms(iEdge, iPoint, jPoint, avgV, V, solution_, geometry,
                        config, area, unitNormal, implicit, flux, jac_i, jac_j);
 
-    /*--- Stop preaccumulation. ---*/
-
-    stopPreacc(flux);
-
     /*--- Update the vector and system matrix. ---*/
 
     updateLinearSystem(iEdge, iPoint, jPoint, implicit, updateType,
                        updateMask, flux, jac_i, jac_j, vector, matrix);
+
+    /*--- Stop preaccumulation. ---*/
+
+    stopPreacc(flux);
   }
 };
 

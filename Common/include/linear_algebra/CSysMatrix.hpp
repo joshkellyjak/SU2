@@ -443,7 +443,7 @@ class CSysMatrix {
     if (!mat_ij) return;
     SU2_OMP_SIMD
     for (auto iVar = 0ul; iVar < nVar * nEqn; ++iVar) {
-      mat_ij[iVar] = (Overwrite ? ScalarType(0) : mat_ij[iVar]) + PassiveAssign(alpha * val_block[iVar]);
+      mat_ij[iVar] = (Overwrite ? ScalarType(0) : mat_ij[iVar]) + PassiveAssign(alpha) * PassiveAssign(val_block[iVar]);
     }
   }
 
@@ -475,7 +475,7 @@ class CSysMatrix {
     if (!mat_ij) return;
     for (auto iVar = 0ul; iVar < nVar; ++iVar) {
       for (auto jVar = 0ul; jVar < nEqn; ++jVar) {
-        *mat_ij = (Overwrite ? ScalarType(0) : *mat_ij) + PassiveAssign(alpha * val_block[iVar][jVar]);
+        *mat_ij = (Overwrite ? ScalarType(0) : *mat_ij) + PassiveAssign(alpha) * PassiveAssign(val_block[iVar][jVar]);
         ++mat_ij;
       }
     }
@@ -522,7 +522,7 @@ class CSysMatrix {
     if (!mat_ij) return;
     for (auto iVar = 0ul; iVar < nVar; ++iVar) {
       for (auto jVar = 0ul; jVar < nEqn; ++jVar) {
-        *mat_ij = (Overwrite ? ScalarType(0) : *mat_ij) + PassiveAssign(alpha * val_block(iVar, jVar));
+        *mat_ij = (Overwrite ? ScalarType(0) : *mat_ij) + PassiveAssign(alpha) * PassiveAssign(val_block(iVar, jVar));
         ++mat_ij;
       }
     }
@@ -563,10 +563,10 @@ class CSysMatrix {
 
     for (iVar = 0; iVar < nVar; iVar++) {
       for (jVar = 0; jVar < nEqn; jVar++) {
-        bii[offset] += PassiveAssign(block_i[iVar][jVar] * scale);
-        bij[offset] += PassiveAssign(block_j[iVar][jVar] * scale);
-        bji[offset] -= PassiveAssign(block_i[iVar][jVar] * scale);
-        bjj[offset] -= PassiveAssign(block_j[iVar][jVar] * scale);
+        bii[offset] += PassiveAssign(block_i[iVar][jVar]) * PassiveAssign(scale);
+        bij[offset] += PassiveAssign(block_j[iVar][jVar]) * PassiveAssign(scale);
+        bji[offset] -= PassiveAssign(block_i[iVar][jVar]) * PassiveAssign(scale);
+        bjj[offset] -= PassiveAssign(block_j[iVar][jVar]) * PassiveAssign(scale);
         ++offset;
       }
     }
@@ -600,8 +600,8 @@ class CSysMatrix {
     for (size_t i = 0; i < blkSz; ++i) {
       SU2_OMP_SIMD_IF_NOT_AD
       for (size_t k = 0; k < N; ++k) {
-        blk_i[k][i] = PassiveAssign(-mask[k] * block_i.data()[i][k]);
-        blk_j[k][i] = PassiveAssign(mask[k] * block_j.data()[i][k]);
+        blk_i[k][i] = -PassiveAssign(mask[k]) * PassiveAssign(block_i.data()[i][k]);
+        blk_j[k][i] = PassiveAssign(mask[k]) * PassiveAssign(block_j.data()[i][k]);
       }
     }
 
@@ -647,8 +647,8 @@ class CSysMatrix {
 
     for (iVar = 0; iVar < nVar; iVar++) {
       for (jVar = 0; jVar < nEqn; jVar++) {
-        bij[offset] = (Overwrite ? ScalarType(0) : bij[offset]) + PassiveAssign(block_j[iVar][jVar] * scale);
-        bji[offset] = (Overwrite ? ScalarType(0) : bji[offset]) - PassiveAssign(block_i[iVar][jVar] * scale);
+        bij[offset] = (Overwrite ? ScalarType(0) : bij[offset]) + PassiveAssign(block_j[iVar][jVar]) * PassiveAssign(scale);
+        bji[offset] = (Overwrite ? ScalarType(0) : bji[offset]) - PassiveAssign(block_i[iVar][jVar]) * PassiveAssign(scale);
         ++offset;
       }
     }
@@ -690,8 +690,8 @@ class CSysMatrix {
     for (size_t i = 0; i < blkSz; ++i) {
       SU2_OMP_SIMD_IF_NOT_AD
       for (size_t k = 0; k < N; ++k) {
-        blk_i[k][i] = PassiveAssign(-mask[k] * block_i.data()[i][k]);
-        blk_j[k][i] = PassiveAssign(mask[k] * block_j.data()[i][k]);
+        blk_i[k][i] = PassiveAssign(-mask[k]) * PassiveAssign(block_i.data()[i][k]);
+        blk_j[k][i] = PassiveAssign(mask[k]) * PassiveAssign(block_j.data()[i][k]);
       }
     }
 
@@ -727,7 +727,7 @@ class CSysMatrix {
 
     for (auto iVar = 0ul; iVar < nVar; iVar++)
       for (auto jVar = 0ul; jVar < nEqn; jVar++) {
-        *mat_ii = (Overwrite ? ScalarType(0) : *mat_ii) + PassiveAssign(alpha * val_block[iVar][jVar]);
+        *mat_ii = (Overwrite ? ScalarType(0) : *mat_ii) + PassiveAssign(alpha) * PassiveAssign(val_block[iVar][jVar]);
         ++mat_ii;
       }
   }

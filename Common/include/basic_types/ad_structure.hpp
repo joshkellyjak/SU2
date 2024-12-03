@@ -577,9 +577,9 @@ template <class T>
 FORCEINLINE void SetPreaccOut(T&& data, const int size) {
   if (PreaccActive) {
     for (int i = 0; i < size; i++) {
-      // if (IsIdentifierActive(data[i])) {
+      //if (IsIdentifierActive(data[i])) {
         PreaccHelper.addOutput(data[i]);
-      // }
+      //}
     }
   }
 }

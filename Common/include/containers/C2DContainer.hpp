@@ -94,7 +94,7 @@ class AccessorImpl {
                                                                                                    \
   void m_allocate(size_t sz, Index_t rows, Index_t cols) noexcept {                                \
     EXTRA;                                                                                         \
-    m_data = MemoryAllocation::aligned_alloc<Scalar_t>(AlignSize, sz);                             \
+    m_data = MemoryAllocation::aligned_alloc<Scalar_t, true>(AlignSize, sz);                             \
     if (!std::is_trivial<Scalar_t>::value)                                                         \
       for (size_t i = 0; i < size(); ++i) new (m_data + i) Scalar_t();                             \
   }                                                                                                \
