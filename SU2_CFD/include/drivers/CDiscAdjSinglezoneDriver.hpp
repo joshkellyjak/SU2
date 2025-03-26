@@ -56,6 +56,16 @@ protected:
   CNumerics ***numerics;                        /*!< \brief Container vector with all the numerics. */
 
   /*!
+   * \brief Kinds of recordings.
+   */
+  enum class Kind_Tape {
+    FULL_TAPE,                /*!< \brief Entire derivative information for a coupled adjoint
+                                          solution update. */
+    OBJECTIVE_FUNCTION_TAPE,  /*!< \brief Record only the dependence of the objective function
+                                          w.r.t. solver variables (from all zones). */
+  };
+
+  /*!
    * \brief Record one iteration of a flow iteration in within multiple zones.
    * \param[in] kind_recording - Type of recording (full list in ENUM_RECORDING, option_structure.hpp)
    */
@@ -116,6 +126,11 @@ public:
    * \param[in] TimeIter - index of the current time-step.
    */
   void Preprocess(unsigned long TimeIter) override;
+
+  /*!
+   * \brief [Overload] Launch the debug mode for the discrete adjoint multizone solver.
+   */
+  void DebugRun() override;
 
   /*!
    * \brief Run a single iteration of the discrete adjoint solver with a single zone.

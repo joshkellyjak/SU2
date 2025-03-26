@@ -45,6 +45,14 @@ CSinglezoneDriver::~CSinglezoneDriver() = default;
 
 void CSinglezoneDriver::StartSolver() {
 
+  if (driver_config->GetDiscrete_Adjoint_Debug()) {
+
+    Preprocess(0);
+
+    DebugRun();
+    return;
+  }
+
   StartTime = SU2_MPI::Wtime();
 
   config_container[ZONE_0]->Set_StartTime(StartTime);

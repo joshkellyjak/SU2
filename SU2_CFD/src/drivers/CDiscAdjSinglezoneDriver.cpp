@@ -145,7 +145,7 @@ void CDiscAdjSinglezoneDriver::Preprocess(unsigned long TimeIter) {
    *--- respect to the conservative variables. Since these derivatives do not change in the steady state case
    *--- we only have to record if the current recording is different from the main variables. ---*/
 
-  if (RecordingState != MainVariables){
+  if (RecordingState != MainVariables && !driver_config->GetDiscrete_Adjoint_Debug()){
     MainRecording();
   }
 
@@ -270,6 +270,8 @@ void CDiscAdjSinglezoneDriver::SetRecording(RECORDING kind_recording){
     case RECORDING::SOLUTION_VARIABLES:
       cout << "Direct iteration to store the primal computational graph." << endl;
       cout << "Computing residuals to check the convergence of the direct problem." << endl; break;
+    case RECORDING::TAG_INIT_SOLUTION_VARIABLES:  cout << "Simulating recording with tag 1." << endl; AD::SetTag(1); break;
+    case RECORDING::TAG_CHECK_SOLUTION_VARIABLES: cout << "Checking first recording with tag 2." << endl; AD::SetTag(2); break;
     default: break;
     }
   }
@@ -410,6 +412,24 @@ void CDiscAdjSinglezoneDriver::MainRecording(){
 
   SetRecording(MainVariables);
 
+}
+
+void CDiscAdjSinglezoneDriver::DebugRun() {
+
+  cout <<"\n---------------------------- Start Debug Run ----------------------------" << endl;
+
+  /*--- This recording will assign the initial (same) tag to each registered variable.
+   *    During the recording, each dependent variable will be assigned the same tag. ---*/
+  SetRecording(RECORDING::TAG_INIT_SOLUTION_VARIABLES);
+
+  /*--- This recording repeats the initial recording with a different tag.
+   *    If a variable was used before it became dependent on the inputs, this variable will still carry the tag
+   *    from the initial recording and a mismatch with the "check" recording tag will throw an error.
+   *    In such a case, a possible reason could be that such a variable is set by a post-processing routine while
+   *    for a mathematically correct recording this dependency must be included earlier. ---*/
+  SetRecording(RECORDING::TAG_CHECK_SOLUTION_VARIABLES);
+
+  cout <<"\n----------------------------- End Debug Run -----------------------------" << endl;
 }
 
 void CDiscAdjSinglezoneDriver::SecondaryRecording(){
